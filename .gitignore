@@ -1,0 +1,25 @@
+# Dependências
+node_modules/
+.pnpm-store/
+
+# Builds gerados
+# A pasta site/ é mantida no pacote entregue por conveniência.
+dist/
+
+# Variáveis locais
+.env
+.env.local
+.env.*.local
+
+# Logs e caches
+*.log
+*.tsbuildinfo
+coverage/
+.cache/
+
+# Editores e sistema operacional
+.vscode/
+.idea/
+*.swp
+.DS_Store
+Thumbs.db
