@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Link, useLocation } from "wouter";
 import { ArrowUpRight, Mail, Menu, X } from "lucide-react";
 import { brand, navItems } from "@/content";
@@ -11,6 +11,21 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
   const [location] = useLocation();
   const [open, setOpen] = useState(false);
   const current = normalize(location);
+
+  // Toda vez que a rota muda, volta o scroll pro topo da página.
+  // Sem isso, ao navegar vindo do fim de uma página longa, a próxima
+  // página abre já rolada até o mesmo ponto (comportamento de SPA).
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location]);
+
+  // Quando o link clicado já é a rota atual, a navegação não dispara
+  // o efeito acima (a rota não muda) — então forçamos o scroll aqui.
+  function goToTop(href: string) {
+    if (normalize(href) === current) {
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+    }
+  }
 
   return (
     <div className="site-shell">
@@ -28,7 +43,10 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
           href="/"
           className="logo-link"
           aria-label="Editora ROEL — página inicial"
-          onClick={() => setOpen(false)}
+          onClick={() => {
+            setOpen(false);
+            goToTop("/");
+          }}
         >
           <img src={brand.logo} alt="Editora ROEL" />
         </Link>
@@ -38,12 +56,13 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
               key={item.href}
               href={item.href}
               className={current === item.href ? "active" : ""}
+              onClick={() => goToTop(item.href)}
             >
               {item.label}
             </Link>
           ))}
         </nav>
-        <Link href="/contato" className="header-contact">
+        <Link href="/contato" className="header-contact" onClick={() => goToTop("/contato")}>
           Fale com a ROEL <ArrowUpRight size={16} />
         </Link>
         <button
@@ -61,12 +80,25 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
         <div className="mobile-panel">
           <nav aria-label="Navegação móvel">
             {navItems.map((item, index) => (
-              <Link key={item.href} href={item.href} onClick={() => setOpen(false)}>
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={() => {
+                  setOpen(false);
+                  goToTop(item.href);
+                }}
+              >
                 <span>{String(index + 1).padStart(2, "0")}</span>
                 {item.label}
               </Link>
             ))}
-            <Link href="/contato" onClick={() => setOpen(false)}>
+            <Link
+              href="/contato"
+              onClick={() => {
+                setOpen(false);
+                goToTop("/contato");
+              }}
+            >
               <span>06</span>Contato
             </Link>
           </nav>
@@ -91,15 +123,19 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
           <div>
             <p className="footer-label">Explore</p>
             {navItems.slice(1).map((item) => (
-              <Link key={item.href} href={item.href}>
+              <Link key={item.href} href={item.href} onClick={() => goToTop(item.href)}>
                 {item.label}
               </Link>
             ))}
           </div>
           <div>
             <p className="footer-label">Governança</p>
-            <Link href="/privacidade">Privacidade</Link>
-            <Link href="/integridade">Canal de integridade</Link>
+            <Link href="/privacidade" onClick={() => goToTop("/privacidade")}>
+              Privacidade
+            </Link>
+            <Link href="/integridade" onClick={() => goToTop("/integridade")}>
+              Canal de integridade
+            </Link>
           </div>
           <div>
             <p className="footer-label">Contato</p>
