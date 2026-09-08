@@ -28,15 +28,10 @@ export default function NewHome() {
           </div>
         </div>
         <div className="hero-art reveal delay-1">
-          <div className="art-number">ROEL · 01</div>
           <img
             src={brand.hero}
-            alt="Ilustração de um livro aberto transformado em uma cidade colorida de livros"
+            alt="Ilustração de um livro aberto transformado em uma cidade colorida de livros, com o selo Roel · 01 e a frase Leitura também é uma forma de cuidado"
           />
-          <div className="floating-note">
-            <Sparkles size={18} />
-            <span>Leitura também é uma forma de cuidado.</span>
-          </div>
         </div>
       </section>
 
